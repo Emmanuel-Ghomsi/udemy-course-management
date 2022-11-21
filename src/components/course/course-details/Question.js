@@ -2,12 +2,16 @@ import "../../../assets/scss/comments.scss";
 import { Editor } from "@tinymce/tinymce-react";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+
+import { loadCourses } from "../../../store/actions/courseActions";
 
 import moment from "moment";
 import "moment/locale/fr";
 
 function Question(props) {
   const editorRef = useRef(null);
+  const dispatch = useDispatch();
 
   const token = `${process.env.REACT_APP_UDEMY_CLIENT_API}`;
   const config = {
@@ -18,8 +22,11 @@ function Question(props) {
 
   const [open, setOpen] = useState(false);
   const [openId, setOpenId] = useState("");
+  const [questionId, setQuestionId] = useState(null);
+  const [replyId, setReplyId] = useState(null);
   const [questionsList, setQuestionsList] = useState([]);
   const [questionReplies, setQuestionReplies] = useState(null);
+  const [reply, setReply] = useState(null);
 
   useEffect(() => {
     axios
@@ -52,6 +59,26 @@ function Question(props) {
         console.error(err);
       });
     setOpenId(question);
+  };
+
+  const handleSendReply = (e) => {
+    e.stopPropagation();
+    axios
+      .post(
+        `${process.env.REACT_APP_UDEMY_HOSTNAME}/courses/${props.id}/questions/${questionId}/replies/`,
+        { body: reply },
+        config
+      )
+      .then((res) => {
+        dispatch(loadCourses);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleUpdateReply = (e) => {
+    e.stopPropagation();
   };
 
   return (
@@ -87,6 +114,9 @@ function Question(props) {
                         onClick={(event) => {
                           event.stopPropagation();
                           openReply(question.id);
+                          setReplyId(null);
+                          setReply(null);
+                          setQuestionId(question.id);
                           event.preventDefault();
                         }}
                       >
@@ -106,7 +136,7 @@ function Question(props) {
                           event.preventDefault();
                         }}
                       >
-                        {question.num_replies} réponses
+                        {question.num_replies} réponse(s)
                       </a>
                       <div className="divider"></div>
                       <span className="is-mute">
@@ -135,16 +165,36 @@ function Question(props) {
                               }}
                             ></div>
                             <div className="footer">
-                              <a
-                                href="#"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  openReply(replie.id);
-                                  event.preventDefault();
-                                }}
-                              >
-                                Répondre
-                              </a>
+                              {replie.user.id ==
+                              process.env.REACT_APP_ADMIN_ID ? (
+                                <a
+                                  href="#"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    openReply(replie.id);
+                                    setReplyId(replie.id);
+                                    setReply(replie.body);
+                                    setQuestionId(replie.id);
+                                    event.preventDefault();
+                                  }}
+                                >
+                                  Modifier
+                                </a>
+                              ) : (
+                                <a
+                                  href="#"
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    openReply(replie.id);
+                                    setReplyId(null);
+                                    setReply(null);
+                                    setQuestionId(replie.id);
+                                    event.preventDefault();
+                                  }}
+                                >
+                                  Répondre
+                                </a>
+                              )}
                               <div className="divider"></div>
                               <span className="is-mute">
                                 {moment(replie.created)
@@ -171,6 +221,7 @@ function Question(props) {
               apiKey={process.env.REACT_APP_TINYMCE_CLIENT_API}
               placeholder="Hi."
               onInit={(evt, editor) => (editorRef.current = editor)}
+              value={reply !== null ? reply : ""}
               init={{
                 height: 600,
                 menubar: false,
@@ -223,9 +274,24 @@ function Question(props) {
               }}
               onChange={(e) => {
                 e.stopPropagation();
-                setQuestionReplies(editorRef.current.getContent());
+                setReply(editorRef.current.getContent());
               }}
             />
+            {replyId == null ? (
+              <button
+                className="btn btn-primary my-3"
+                onClick={handleSendReply}
+              >
+                Soumettre
+              </button>
+            ) : (
+              <button
+                className="btn btn-primary my-3"
+                onClick={handleUpdateReply}
+              >
+                Modifier
+              </button>
+            )}
           </div>
         </div>
       ) : null}

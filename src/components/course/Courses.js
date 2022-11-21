@@ -10,7 +10,7 @@ import { getCourses } from "../../store/actions/courseActions";
 function Courses() {
   const stateCourses = useSelector((state) => state.course.courses);
 
-  const dispatch = useDispatch(); // dispatch events
+  const dispatch = useDispatch();
   const [courses, setCourses] = useState([]);
   const [openId, setOpenId] = useState("");
   const [unReadQuestions, setUnReadQuestions] = useState(null);
