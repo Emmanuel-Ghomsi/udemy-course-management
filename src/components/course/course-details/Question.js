@@ -24,7 +24,7 @@ function Question(props) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/questions/?course=${props.id}/?page_size=100`,
+        `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/questions/?course=${props.id}&ordering=newest/?page_size=100`,
         config
       )
       .then((res) => {
@@ -165,14 +165,14 @@ function Question(props) {
       </div>
 
       {open ? (
-        <div className="col-lg-6 card">
-          <div className="card-body">
+        <div className="col-lg-6 card position-relative">
+          <div className="card-body position-fixed">
             <Editor
               apiKey={process.env.REACT_APP_TINYMCE_CLIENT_API}
               placeholder="Hi."
               onInit={(evt, editor) => (editorRef.current = editor)}
               init={{
-                height: 200,
+                height: 600,
                 menubar: false,
                 plugins: [
                   "advlist",

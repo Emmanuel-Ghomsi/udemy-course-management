@@ -18,7 +18,7 @@ function Review(props) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/reviews/?course=${props.id}/?page_size=100`,
+        `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/reviews/?course=${props.id}&ordering=created/?page_size=100`,
         config
       )
       .then((res) => {
@@ -45,7 +45,7 @@ function Review(props) {
                 </div>
                 <div className="footer">
                   <button className="btn react">
-                    <i className="fa fa-star"></i>&nbsp;
+                    <i className="fa fa-star text-yellow"></i>&nbsp;
                     {review.rating}
                   </button>
                   <div className="divider"></div>
