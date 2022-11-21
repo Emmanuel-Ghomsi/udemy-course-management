@@ -1,3 +1,9 @@
 # Udemy courses management
 
-Retrieve course reviews, comments and questions in a Udemy session, post them on the platform and respond to them directly from the platform
+Retrieve course reviews, comments and questions in a Udemy session, post them on the platform and respond to them directly from the platform.
+
+## Installation des dépendances
+`make install`
+
+## Déploiement
+`npm run build`
