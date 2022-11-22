@@ -6,7 +6,7 @@
 	cp .env.dev .env
 
 ./src/config/.htaccess: ./src/config/.htaccess.example
-	cp .htaccess.example .htaccess
+	cp ./src/config/.htaccess.example ./src/config/.htaccess
 
 install: .env ./src/config/.htaccess
 	echo "installations des dépendances"
