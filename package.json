@@ -1,5 +1,6 @@
 {
   "name": "udemy-course-management",
+  "homepage": "http://193.46.199.78:2023/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
