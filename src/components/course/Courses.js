@@ -11,9 +11,8 @@ function Courses() {
   const stateCourses = useSelector((state) => state.course.courses);
 
   const dispatch = useDispatch();
-  const [courses, setCourses] = useState([]);
-  const [openId, setOpenId] = useState("");
-  const [unReadQuestions, setUnReadQuestions] = useState(null);
+  const [courses, setCourses] = useState(null);
+  const [completedCourses, setCompletedCourses] = useState([]);
 
   const token = `${process.env.REACT_APP_UDEMY_CLIENT_API}`;
   const config = {
@@ -25,22 +24,29 @@ function Courses() {
   useEffect(() => {
     if (stateCourses === null) dispatch(getCourses());
     else setCourses(stateCourses);
-  }, [stateCourses]);
 
-  const countUnReadQuestions = (course) => {
-    axios
-      .get(
-        `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/questions/?status=unread&course=${course}/?page_size=100`,
-        config
-      )
-      .then((res) => {
-        setUnReadQuestions(res.data.count);
-      })
-      .catch((err) => {
-        console.error(err);
+    if (courses != null) {
+      let tab = [];
+      courses.map((course) => {
+        axios
+          .get(
+            `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/questions/?status=unread&course=${course.id}/?page_size=100`,
+            config
+          )
+          .then((res) => {
+            tab = tab.concat({
+              id: course.id,
+              title: course.published_title,
+              count: res.data.count,
+            });
+            setCompletedCourses(tab);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       });
-    setOpenId(course);
-  };
+    }
+  }, [stateCourses, courses]);
 
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
@@ -56,43 +62,46 @@ function Courses() {
               <thead>
                 <tr>
                   <th>Cours</th>
-                  <th>Status (Survoler le cours pour afficher son statut)</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody className="table-border-bottom-0">
-                {courses.map((course, index) => {
-                  return (
-                    <tr
-                      key={course.id}
-                      onMouseOver={(event) => {
-                        event.stopPropagation();
-                        countUnReadQuestions(course.id);
-                        event.preventDefault();
-                      }}
-                    >
-                      <td>
-                        <Link
-                          to="/course-detail"
-                          state={{
-                            data: {
-                              id: course.id,
-                              title: course.published_title,
-                            },
-                          }}
-                        >
-                          <strong>{course.published_title}</strong>
-                        </Link>
-                      </td>
-                      <td>
-                        {openId == course.id ? (
-                          <span className="badge bg-label-warning me-1">
-                              {unReadQuestions}&nbsp;question(s) non lue(s)
+                {completedCourses != null ? (
+                  completedCourses?.map((course, index) => {
+                    return (
+                      <tr key={course.id}>
+                        <td>
+                          <Link
+                            to="/course-detail"
+                            state={{
+                              data: {
+                                id: course.id,
+                                title: course.title,
+                              },
+                            }}
+                          >
+                            <strong>{course.title}</strong>
+                          </Link>
+                        </td>
+                        <td>
+                          {course.count > 0 ? (
+                            <span className="badge bg-label-success me-1">
+                              {course.count}&nbsp;question(s) non lue(s)
                             </span>
-                        ) : null}
-                      </td>
-                    </tr>
-                  );
-                })}
+                          ) : (
+                            <span className="badge bg-label-secondary me-1">
+                              {course.count}&nbsp;question(s) non lue(s)
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td>Chargement...</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

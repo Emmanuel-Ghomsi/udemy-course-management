@@ -5,7 +5,7 @@ function Navigation() {
       id="layout-navbar"
     >
       <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-        <a className="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+        <a className="nav-item nav-link px-0 me-xl-4" href="#">
           <i className="bx bx-menu bx-sm"></i>
         </a>
       </div>
@@ -30,7 +30,7 @@ function Navigation() {
           <li className="nav-item navbar-dropdown dropdown-user dropdown">
             <a
               className="nav-link dropdown-toggle hide-arrow"
-              href="javascript:void(0);"
+              href="#"
               data-bs-toggle="dropdown"
             >
               <div className="avatar avatar-online">
@@ -91,7 +91,7 @@ function Navigation() {
                 <div className="dropdown-divider"></div>
               </li>
               <li>
-                <a className="dropdown-item" href="auth-login-basic.html">
+                <a className="dropdown-item" href="#">
                   <i className="bx bx-power-off me-2"></i>
                   <span className="align-middle">Log Out</span>
                 </a>

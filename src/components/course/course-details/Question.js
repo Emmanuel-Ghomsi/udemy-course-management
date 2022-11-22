@@ -24,7 +24,7 @@ function Question(props) {
   const [openId, setOpenId] = useState("");
   const [questionId, setQuestionId] = useState(null);
   const [replyId, setReplyId] = useState(null);
-  const [questionsList, setQuestionsList] = useState([]);
+  const [questionsList, setQuestionsList] = useState(null);
   const [questionReplies, setQuestionReplies] = useState(null);
   const [reply, setReply] = useState(null);
 
@@ -85,132 +85,138 @@ function Question(props) {
     <div className="row">
       <div className="col-lg-6 card mb-4">
         <div className="card-body">
-          {questionsList?.map((question, index) => {
-            return (
-              <div key={question.id}>
-                <div>
-                  <div className="comment">
-                    <div className="user-banner">
-                      <div className="user">
-                        <h5>
-                          {question.title}&nbsp;
-                          {question.is_read ? (
-                            <i className="fa fa-circle text-secondary"></i>
-                          ) : (
-                            <i className="fa fa-circle text-success"></i>
-                          )}
-                        </h5>
+          {questionsList != null ? (
+            questionsList?.map((question, index) => {
+              return (
+                <div key={question.id}>
+                  <div>
+                    <div className="comment">
+                      <div className="user-banner">
+                        <div className="user">
+                          <h5>
+                            {question.title}&nbsp;
+                            {question.is_read ? (
+                              <i className="fa fa-circle text-secondary"></i>
+                            ) : (
+                              <i className="fa fa-circle text-success"></i>
+                            )}
+                          </h5>
+                        </div>
+                      </div>
+                      <div
+                        className="content"
+                        dangerouslySetInnerHTML={{
+                          __html: question.body,
+                        }}
+                      ></div>
+                      <div className="footer">
+                        <a
+                          href="#"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openReply(question.id);
+                            setReplyId(null);
+                            setReply(null);
+                            setQuestionId(question.id);
+                            event.preventDefault();
+                          }}
+                        >
+                          Répondre
+                        </a>
+                        <div className="divider"></div>
+                        <span className="is-mute">
+                          {moment(question.created).locale("fr").format("ll")}
+                        </span>
+                        <div className="divider"></div>
+                        <a
+                          href="#"
+                          className="is-mute"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openQuestion(question.id);
+                            event.preventDefault();
+                          }}
+                        >
+                          {question.num_replies} réponse(s)
+                        </a>
+                        <div className="divider"></div>
+                        <span className="is-mute">
+                          {question.num_follows} follows
+                        </span>
                       </div>
                     </div>
-                    <div
-                      className="content"
-                      dangerouslySetInnerHTML={{
-                        __html: question.body,
-                      }}
-                    ></div>
-                    <div className="footer">
-                      <a
-                        href="#"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          openReply(question.id);
-                          setReplyId(null);
-                          setReply(null);
-                          setQuestionId(question.id);
-                          event.preventDefault();
-                        }}
-                      >
-                        Répondre
-                      </a>
-                      <div className="divider"></div>
-                      <span className="is-mute">
-                        {moment(question.created).locale("fr").format("ll")}
-                      </span>
-                      <div className="divider"></div>
-                      <a
-                        href="#"
-                        className="is-mute"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          openQuestion(question.id);
-                          event.preventDefault();
-                        }}
-                      >
-                        {question.num_replies} réponse(s)
-                      </a>
-                      <div className="divider"></div>
-                      <span className="is-mute">
-                        {question.num_follows} follows
-                      </span>
-                    </div>
-                  </div>
-                  {openId == question.id
-                    ? questionReplies?.map((replie, index) => {
-                        return (
-                          <div key={replie.id} className="reply comment">
-                            <div className="user-banner">
-                              <div className="user">
-                                <h5>
-                                  {replie.user.name}&nbsp;
-                                  {replie.is_top_answer != null ? (
-                                    <i className="fa fa-check text-success"></i>
-                                  ) : null}
-                                </h5>
+                    {openId == question.id
+                      ? questionReplies?.map((replie, index) => {
+                          return (
+                            <div key={replie.id} className="reply comment">
+                              <div className="user-banner">
+                                <div className="user">
+                                  <h5>
+                                    {replie.user.name}&nbsp;
+                                    {replie.is_top_answer != null ? (
+                                      <i className="fa fa-check text-success"></i>
+                                    ) : null}
+                                  </h5>
+                                </div>
+                              </div>
+                              <div
+                                className="content"
+                                dangerouslySetInnerHTML={{
+                                  __html: replie.body,
+                                }}
+                              ></div>
+                              <div className="footer">
+                                {replie.user.id ==
+                                process.env.REACT_APP_ADMIN_ID ? (
+                                  <a
+                                    href="#"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      openReply(replie.id);
+                                      setReplyId(replie.id);
+                                      setReply(replie.body);
+                                      setQuestionId(replie.id);
+                                      event.preventDefault();
+                                    }}
+                                  >
+                                    Modifier
+                                  </a>
+                                ) : (
+                                  <a
+                                    href="#"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      openReply(replie.id);
+                                      setReplyId(null);
+                                      setReply(null);
+                                      setQuestionId(replie.id);
+                                      event.preventDefault();
+                                    }}
+                                  >
+                                    Répondre
+                                  </a>
+                                )}
+                                <div className="divider"></div>
+                                <span className="is-mute">
+                                  {moment(replie.created)
+                                    .locale("fr")
+                                    .format("ll")}
+                                </span>
                               </div>
                             </div>
-                            <div
-                              className="content"
-                              dangerouslySetInnerHTML={{
-                                __html: replie.body,
-                              }}
-                            ></div>
-                            <div className="footer">
-                              {replie.user.id ==
-                              process.env.REACT_APP_ADMIN_ID ? (
-                                <a
-                                  href="#"
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    openReply(replie.id);
-                                    setReplyId(replie.id);
-                                    setReply(replie.body);
-                                    setQuestionId(replie.id);
-                                    event.preventDefault();
-                                  }}
-                                >
-                                  Modifier
-                                </a>
-                              ) : (
-                                <a
-                                  href="#"
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    openReply(replie.id);
-                                    setReplyId(null);
-                                    setReply(null);
-                                    setQuestionId(replie.id);
-                                    event.preventDefault();
-                                  }}
-                                >
-                                  Répondre
-                                </a>
-                              )}
-                              <div className="divider"></div>
-                              <span className="is-mute">
-                                {moment(replie.created)
-                                  .locale("fr")
-                                  .format("ll")}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })
-                    : null}
+                          );
+                        })
+                      : null}
+                  </div>
+                  <hr />
                 </div>
-                <hr />
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <tr>
+              <td>Chargement...</td>
+            </tr>
+          )}
         </div>
       </div>
 

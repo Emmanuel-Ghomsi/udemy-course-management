@@ -13,7 +13,7 @@ function Review(props) {
     },
   };
 
-  const [reviewsList, setReviewsList] = useState([]);
+  const [reviewsList, setReviewsList] = useState(null);
 
   useEffect(() => {
     axios
@@ -32,30 +32,36 @@ function Review(props) {
     <>
       <div className="card mb-4">
         <div className="card-body">
-          {reviewsList.map((review, index) => {
-            return (
-              <div key={review.id} className="comment">
-                <div className="user-banner">
-                  <div className="user">
-                    <h5>{review.user.name}</h5>
+          {reviewsList != null ? (
+            reviewsList?.map((review, index) => {
+              return (
+                <div key={review.id} className="comment">
+                  <div className="user-banner">
+                    <div className="user">
+                      <h5>{review.user.name}</h5>
+                    </div>
+                  </div>
+                  <div className="content">
+                    <p>{review.content}</p>
+                  </div>
+                  <div className="footer">
+                    <button className="btn react">
+                      <i className="fa fa-star text-yellow"></i>&nbsp;
+                      {review.rating}
+                    </button>
+                    <div className="divider"></div>
+                    <span className="is-mute">
+                      {moment(review.created).locale("fr").format("ll")}
+                    </span>
                   </div>
                 </div>
-                <div className="content">
-                  <p>{review.content}</p>
-                </div>
-                <div className="footer">
-                  <button className="btn react">
-                    <i className="fa fa-star text-yellow"></i>&nbsp;
-                    {review.rating}
-                  </button>
-                  <div className="divider"></div>
-                  <span className="is-mute">
-                    {moment(review.created).locale("fr").format("ll")}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <tr>
+              <td>Chargement...</td>
+            </tr>
+          )}
         </div>
       </div>
     </>
