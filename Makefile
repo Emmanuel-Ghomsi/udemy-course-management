@@ -8,6 +8,6 @@
 ./public/.htaccess: ./src/config/.htaccess.example
 	cp ./src/config/.htaccess.example ./public/.htaccess
 
-install: .env ./src/config/.htaccess
+install: .env ./public/.htaccess
 	echo "installations des dépendances"
 	npm install --legacy-peer-deps
