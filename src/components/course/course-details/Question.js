@@ -42,10 +42,6 @@ function Question(props) {
       });
   }, []);
 
-  const openReply = (question) => {
-    setOpen(true);
-  };
-
   const openQuestion = (question) => {
     axios
       .get(
@@ -79,6 +75,18 @@ function Question(props) {
 
   const handleUpdateReply = (e) => {
     e.stopPropagation();
+    axios
+      .put(
+        `${process.env.REACT_APP_UDEMY_HOSTNAME}/courses/${props.id}/questions/${questionId}/replies/${replyId}/`,
+        { body: reply },
+        config
+      )
+      .then((res) => {
+        dispatch(loadCourses);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
@@ -114,7 +122,7 @@ function Question(props) {
                           href="#"
                           onClick={(event) => {
                             event.stopPropagation();
-                            openReply(question.id);
+                            setOpen(true);
                             setReplyId(null);
                             setReply(null);
                             setQuestionId(question.id);
@@ -172,10 +180,10 @@ function Question(props) {
                                     href="#"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      openReply(replie.id);
+                                      setOpen(true);
                                       setReplyId(replie.id);
                                       setReply(replie.body);
-                                      setQuestionId(replie.id);
+                                      setQuestionId(question.id);
                                       event.preventDefault();
                                     }}
                                   >
@@ -186,7 +194,7 @@ function Question(props) {
                                     href="#"
                                     onClick={(event) => {
                                       event.stopPropagation();
-                                      openReply(replie.id);
+                                      setOpen(true);
                                       setReplyId(null);
                                       setReply(null);
                                       setQuestionId(replie.id);
