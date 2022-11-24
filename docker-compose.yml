@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  client:
+    build: ./
+    env_file: ./.env
+    volumes:
+      - ./:/var/www
+      - nodemodules:/var/www/node_modules
+    ports:
+      - "${REACT_APP_CLIENT_PORT}:80"
+
+volumes:
+  nodemodules: {}

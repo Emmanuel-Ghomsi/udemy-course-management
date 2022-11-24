@@ -4,7 +4,9 @@ Retrieve course reviews, comments and questions in a Udemy session, post them on
 
 ## Installation des dépendances
 - `make install`
-- Replace "homepage" url in package.json by your hostname
 
 ## Déploiement
-`npm run build`
+- Build du container en renseignant le port de Nginx
+    - `docker build --build-arg PORT=CODE_DU_PORT`
+- lancement du docker-compose
+    - `docker-compose up -d`
