@@ -58,9 +58,7 @@ function Review(props) {
               );
             })
           ) : (
-            <tr>
-              <td>Chargement...</td>
-            </tr>
+            <div>Chargement...</div>
           )}
         </div>
       </div>
