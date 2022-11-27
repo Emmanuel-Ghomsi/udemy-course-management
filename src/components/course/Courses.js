@@ -31,17 +31,31 @@ function Courses() {
 
     if (courses != null) {
       let tab = [];
+      let moyenne = 0;
       courses.map((course) => {
         axios
           .get(
             `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/questions/?status=unread&course=${course.id}/?page_size=100`,
             config
           )
-          .then((res) => {
+          .then(async (res) => {
+            const results = await axios.get(
+              `${process.env.REACT_APP_UDEMY_HOSTNAME}/taught-courses/reviews/?course=${course.id}/?page_size=100`,
+              config
+            );
+            let rating = 0;
+
+            results.data.results?.map((review) => {
+              rating = rating + review.rating;
+            });
+
+            rating == 0 ? (moyenne = 0) : (moyenne = rating / results.data.results.length);
+
             tab = tab.concat({
               id: course.id,
               title: course.published_title,
               count: res.data.count,
+              avg: Math.round(moyenne * 100) / 100,
             });
             setCompletedCourses(tab);
           })
@@ -53,8 +67,9 @@ function Courses() {
   }, [stateCourses, courses]);
 
   const columns = [
-    { label: "Cours", accessor: "title", sortable: true },
+    { label: "Filtrer", accessor: "title", sortable: true },
     { label: "Status", accessor: "count", sortable: true },
+    { label: "Note moyenne", accessor: "avg", sortable: true },
   ];
 
   const handleSorting = (sortField, sortOrder) => {
@@ -142,6 +157,11 @@ function Courses() {
                                 {course.count}&nbsp;question(s) non lue(s)
                               </span>
                             )}
+                          </td>
+                          <td>
+                            <span className="badge bg-label-primary me-1">
+                              {course.avg}
+                            </span>
                           </td>
                         </tr>
                       );
