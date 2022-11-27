@@ -22,8 +22,8 @@ const TableHead = ({ columns, handleSorting }) => {
               ? `${tableStyles.up}`
               : sortField === accessor && order === "desc"
               ? `${tableStyles.down}`
-              : `default`
-            : "";
+              : `${tableStyles.default}`
+            : `${tableStyles.default}`;
 
           return (
             <th

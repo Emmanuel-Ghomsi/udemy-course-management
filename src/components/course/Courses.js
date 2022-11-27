@@ -49,7 +49,9 @@ function Courses() {
               rating = rating + review.rating;
             });
 
-            rating == 0 ? (moyenne = 0) : (moyenne = rating / results.data.results.length);
+            rating == 0
+              ? (moyenne = 0)
+              : (moyenne = rating / results.data.results.length);
 
             tab = tab.concat({
               id: course.id,
@@ -57,7 +59,16 @@ function Courses() {
               count: res.data.count,
               avg: Math.round(moyenne * 100) / 100,
             });
-            setCompletedCourses(tab);
+            setCompletedCourses(
+              tab.sort((a, b) => {
+                if (a.title != null && b.title != null)
+                  return (
+                    a.title.localeCompare(b.title, "en", {
+                      numeric: true,
+                    }) * 1
+                  );
+              })
+            );
           })
           .catch((err) => {
             console.error(err);
@@ -67,7 +78,7 @@ function Courses() {
   }, [stateCourses, courses]);
 
   const columns = [
-    { label: "Filtrer", accessor: "title", sortable: true },
+    { label: "Titre", accessor: "title", sortable: true },
     { label: "Status", accessor: "count", sortable: true },
     { label: "Note moyenne", accessor: "avg", sortable: true },
   ];
@@ -101,7 +112,9 @@ function Courses() {
       <div className="row">
         <div className="card">
           <div className="d-flex align-center justify-between">
-            <h5 className="card-header">Tout les cours</h5>
+            <h5 className="card-header">
+              Tout les cours ({completedCourses.length})
+            </h5>
 
             <div className="navbar-nav align-items-center">
               <div className="nav-item d-flex align-items-center">
