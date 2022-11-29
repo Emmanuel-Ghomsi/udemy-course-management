@@ -18,7 +18,7 @@ RUN npm run build
 
 FROM nginx:1.22.0-alpine
 
-ARG PORT=2022
+ARG PORT
 
 COPY --from=build-stage /udemy-course-management/build /usr/share/nginx/html
 
