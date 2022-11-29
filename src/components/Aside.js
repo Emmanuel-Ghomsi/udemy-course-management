@@ -8,9 +8,7 @@ function Aside() {
     >
       <div className="app-brand demo">
         <Link to="/" className="app-brand-link">
-          <span className="app-brand-text demo menu-text fw-bolder ms-2">
-            🎉
-          </span>
+          <img src="logo.png" className="app-brand-text demo menu-text fw-bolder ms-2" width={150} />
         </Link>
 
         <a
