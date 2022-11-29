@@ -24,6 +24,6 @@ COPY --from=build-stage /udemy-course-management/build /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE $PORT
+EXPOSE 2033
 
 CMD nginx -g 'daemon off;
