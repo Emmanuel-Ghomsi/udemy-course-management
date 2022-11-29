@@ -7,6 +7,6 @@ Retrieve course reviews, comments and questions in a Udemy session, post them on
 
 ## Déploiement
 - Build du container en renseignant le port de Nginx
-    - `docker build --build-arg PORT=CODE_DU_PORT`
+    - `docker build --build-arg PORT=CODE_DU_PORT .`
 - lancement du docker-compose
     - `docker-compose up -d`

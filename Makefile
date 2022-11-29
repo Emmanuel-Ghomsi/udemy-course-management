@@ -11,5 +11,4 @@
 
 ## install: .env ./public/.htaccess
 install: .env
-	echo "installations des dépendances"
-	npm install --legacy-peer-deps
+	echo "copie des fichiers d'environnement"
